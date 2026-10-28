@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Login System</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #101b4b, #1769aa, #6c63ff);
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 35px;
+  border-radius: 20px;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.25);
+}
+
+.logo {
+  width: 65px;
+  height: 65px;
+  margin: 0 auto 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 18px;
+  background: #1769ff;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+h1 {
+  text-align: center;
+  color: #172554;
+  font-size: 27px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #777;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.tabs {
+  display: flex;
+  background: #f0f3f9;
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 23px;
+}
+
+.tabs button {
+  width: 50%;
+  padding: 11px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  background: transparent;
+  color: #555;
+}
+
+.tabs button.active {
+  background: #1769ff;
+  color: white;
+}
+
+.field {
+  margin-bottom: 17px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #26334d;
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d6dce8;
+  border-radius: 9px;
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+}
+
+input:focus {
+  border-color: #1769ff;
+  box-shadow: 0 0 0 3px rgba(23,105,255,0.1);
+}
+
+.password-box {
+  position: relative;
+}
+
+.password-box input {
+  padding-right: 65px;
+}
+
+.toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #1769ff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
+}
+
+a {
+  color: #1769ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background: #1769ff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.submit-btn:hover {
+  background: #1054d4;
+  transform: translateY(-1px);
+}
+
+.message {
+  display: none;
+  margin-bottom: 16px;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.message.error {
+  display: block;
+  background: #fff0f0;
+  color: #b42318;
+}
+
+.message.success {
+  display: block;
+  background: #eaf9ef;
+  color: #16713a;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 23px;
+  color: #777;
+  font-size: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 420px) {
+  .container {
+    padding: 25px 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="logo">L</div>
+
+  <h1 id="heading">Welcome Back!</h1>
+  <p class="subtitle" id="subtitle">
+    Sign in to continue to your account
+  </p>
+
+  <div class="tabs">
+    <button type="button" id="loginTab"
+      class="active" onclick="switchForm('login')">
+      Login
+    </button>
+
+    <button type="button" id="registerTab"
+      onclick="switchForm('register')">
+      Register
+    </button>
+  </div>
+
+  <div id="message" class="message" role="status"
+       aria-live="polite"></div>
+
+  <form id="authForm" novalidate>
+    <div class="field hidden" id="nameField">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname"
+        placeholder="Enter your full name"
+        autocomplete="name">
+    </div>
+
+    <div class="field">
+      <label for="email">Email Address</label>
+      <input type="email" id="email"
+        placeholder="you@example.com"
+        autocomplete="email" required>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+
+      <div class="password-box">
+        <input type="password" id="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          minlength="8" required>
+
+        <button type="button" class="toggle"
+          onclick="togglePassword('password', this)">
+          SHOW
+        </button>
+      </div>
+    </div>
+
+    <div class="field hidden" id="confirmField">
+      <label for="confirmPassword">Confirm Password</label>
+
+      <div class="password-box">
+        <input type="password" id="confirmPassword"
+          placeholder="Repeat your password"
+          autocomplete="new-password">
+
+        <button type="button" class="toggle"
+          onclick="togglePassword('confirmPassword', this)">
+          SHOW
+        </button>
+      </div>
+    </div>
+
+    <div class="options" id="loginOptions">
+      <label class="remember">
+        <input type="checkbox" id="remember">
+        Remember me
+      </label>
+
+      <a href="#" onclick="forgotPassword(event)">
+        Forgot password?
+      </a>
+    </div>
+
+    <button type="submit" class="submit-btn"
+      id="submitBtn">Login</button>
+  </form>
+
+  <div class="footer">
+    © 2026 Your Brand. All rights reserved.
+  </div>
+</div>
+
+<script>
+const form = document.getElementById("authForm");
+const message = document.getElementById("message");
+
+let currentMode = "login";
+
+function showMessage(text, type) {
+  message.textContent = text;
+  message.className = "message " + type;
+}
+
+function clearMessage() {
+  message.textContent = "";
+  message.className = "message";
+}
+
+function switchForm(mode) {
+  currentMode = mode;
+  clearMessage();
+
+  const isRegister = mode === "register";
+
+  document.getElementById("heading").textContent =
+    isRegister ? "Create Account" : "Welcome Back!";
+
+  document.getElementById("subtitle").textContent =
+    isRegister
+      ? "Sign up to get started"
+      : "Sign in to continue to your account";
+
+  document.getElementById("submitBtn").textContent =
+    isRegister ? "Create Account" : "Login";
+
+  document.getElementById("loginTab")
+    .classList.toggle("active", !isRegister);
+
+  document.getElementById("registerTab")
+    .classList.toggle("active", isRegister);
+
+  document.getElementById("nameField")
+    .classList.toggle("hidden", !isRegister);
+
+  document.getElementById("confirmField")
+    .classList.toggle("hidden", !isRegister);
+
+  document.getElementById("loginOptions")
+    .classList.toggle("hidden", isRegister);
+
+  document.getElementById("fullname").required = isRegister;
+  document.getElementById("confirmPassword").required = isRegister;
+
+  document.getElementById("password").autocomplete =
+    isRegister ? "new-password" : "current-password";
+
+  document.getElementById("fullname").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("confirmPassword").value = "";
+}
+
+function togglePassword(id, button) {
+  const input = document.getElementById(id);
+
+  if (input.type === "password") {
+    input.type = "text";
+    button.textContent = "HIDE";
+  } else {
+    input.type = "password";
+    button.textContent = "SHOW";
+  }
+}
+
+function forgotPassword(event) {
+  event.preventDefault();
+
+  showMessage(
+    "Password recovery requires a connected backend. Contact your administrator for assistance.",
+    "error"
+  );
+}
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+  clearMessage();
+
+  const name = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword =
+    document.getElementById("confirmPassword").value;
+
+  if (!email || !document.getElementById("email").checkValidity()) {
+    showMessage("Please enter a valid email address.", "error");
+    return;
+  }
+
+  if (password.length < 8) {
+    showMessage("Password must contain at least 8 characters.", "error");
+    return;
+  }
+
+  if (currentMode === "register") {
+    if (name.length < 2) {
+      showMessage("Please enter your full name.", "error");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showMessage("Your passwords do not match.", "error");
+      return;
+    }
+
+    showMessage(
+      "Form validated! Connect a secure backend to create your account.",
+      "success"
+    );
+  } else {
+    showMessage(
+      "Form validated! Connect a secure backend to authenticate your account.",
+      "success"
+    );
+  }
+});
+</script>
+
+</body>
+</html>
